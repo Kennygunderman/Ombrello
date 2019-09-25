@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Ombrello</string>
+    <string name="label_forecast_today">Today</string>
 </resources>
