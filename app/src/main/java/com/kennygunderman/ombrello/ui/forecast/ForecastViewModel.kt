@@ -31,8 +31,7 @@ constructor(private val weatherService: WeatherService, private val dateUtil: ID
         weatherService.getWeather(lat, long, TempUnit.FAHRENHEIT)
             .enqueue(object: Callback<WeatherResponse> {
                 override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
-                    //...
-
+                    //TODO: post value back to UI to display Error message to User.
                     Log.d("Error", t.localizedMessage)
                 }
 
