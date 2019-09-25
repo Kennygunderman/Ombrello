@@ -1,6 +1,5 @@
 package com.kennygunderman.ombrello.ui.forecast
 
-import android.text.format.DateUtils
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,12 +8,13 @@ import com.kennygunderman.ombrello.data.model.TempUnit
 import com.kennygunderman.ombrello.data.model.WeatherResponse
 import com.kennygunderman.ombrello.service.api.WeatherService
 import com.kennygunderman.ombrello.ui.base.BaseViewModel
+import com.kennygunderman.ombrello.util.IDateUtil
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class ForecastViewModel
-constructor(private val weatherService: WeatherService): BaseViewModel() {
+constructor(private val weatherService: WeatherService, private val dateUtil: IDateUtil): BaseViewModel() {
     private val temp = MutableLiveData<String>()
     private val status = MutableLiveData<String>()
     private val hourlyForecast = MutableLiveData<List<ForecastCondition>>()
@@ -63,7 +63,7 @@ constructor(private val weatherService: WeatherService): BaseViewModel() {
         val hourlyToday = mutableListOf<ForecastCondition>()
 
         hourlyForecast.forEach { forecast ->
-            if (DateUtils.isToday(forecast.time?.time ?: 0L)) {
+            if (dateUtil.isToday(forecast.time?.time ?: 0L)) {
                 hourlyToday.add(forecast)
             }
         }
