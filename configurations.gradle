@@ -8,8 +8,8 @@ ext {
     DARKSKY_API_KEY = "DARKSKY_API_KEY"
     DARKSKY_BASE_URL = "DARKSKY_BASE_URL"
 
-    darkSkyApiKey = project.hasProperty('com.kennygunderman.umbrella.darkskyapikey') ?
-            project.getProperty('com.kennygunderman.umbrella.darkskyapikey') :
+    darkSkyApiKey = project.hasProperty('com.kennygunderman.ombrello.darkskyapikey') ?
+            project.getProperty('com.kennygunderman.ombrello.darkskyapikey') :
             System.getenv('DARK_SKY_API_KEY') ?: ''
 
     configs = [:]

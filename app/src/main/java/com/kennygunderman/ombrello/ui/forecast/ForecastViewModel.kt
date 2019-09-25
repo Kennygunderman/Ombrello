@@ -1,6 +1,7 @@
 package com.kennygunderman.ombrello.ui.forecast
 
 import android.text.format.DateUtils
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kennygunderman.ombrello.data.model.ForecastCondition
@@ -31,6 +32,8 @@ constructor(private val weatherService: WeatherService): BaseViewModel() {
             .enqueue(object: Callback<WeatherResponse> {
                 override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
                     //...
+
+                    Log.d("Error", t.localizedMessage)
                 }
 
                 override fun onResponse(
@@ -65,7 +68,7 @@ constructor(private val weatherService: WeatherService): BaseViewModel() {
             }
         }
 
-        this.hourlyForecast.value = hourlyForecast
+        this.hourlyForecast.value = hourlyToday
     }
 
     /**

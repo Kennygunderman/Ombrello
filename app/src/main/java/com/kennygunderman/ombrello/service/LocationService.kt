@@ -5,11 +5,12 @@ import android.annotation.SuppressLint
 import android.location.Geocoder
 import android.location.LocationManager
 
+val LOCATION_REQUEST = 100
+
 class LocationService(private val locationManager: LocationManager, private val geocoder: Geocoder) {
     interface Callback {
         fun hasPermission(perm: String): Boolean
         fun permRequestNeeded(perm: String)
-        val locationRequestCode: Int get() = 100
     }
 
     var callback: Callback? = null
