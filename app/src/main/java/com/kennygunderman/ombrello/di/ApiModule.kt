@@ -29,7 +29,7 @@ val apiModule = module {
     /**
      * Provide [OkHttpClient]
      */
-    factory<OkHttpClient> {
+    factory {
         val cacheDir = File((get<Context>() as OmbrelloApplication).cacheDir, "http")
         val cache = Cache(
             cacheDir,
