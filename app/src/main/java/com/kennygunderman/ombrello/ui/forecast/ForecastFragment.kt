@@ -5,8 +5,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.kennygunderman.ombrello.R
 import com.kennygunderman.ombrello.databinding.FragmentForecastBinding
-import com.kennygunderman.ombrello.service.LOCATION_REQUEST
-import com.kennygunderman.ombrello.service.LocationService
+import com.kennygunderman.ombrello.service.location.LOCATION_REQUEST
+import com.kennygunderman.ombrello.service.location.LocationService
 import com.kennygunderman.ombrello.ui.base.BaseFragment
 import com.kennygunderman.ombrello.ui.forecast.adapter.ForecastAdapter
 import com.kennygunderman.ombrello.util.LayoutUtil
@@ -18,6 +18,8 @@ class ForecastFragment : BaseFragment<ForecastViewModel, FragmentForecastBinding
 
     private val locationService by inject<LocationService>()
 
+    private var forecastAdapter: ForecastAdapter? = null
+
     override fun onStart() {
         super.onStart()
         setupViews()
@@ -28,11 +30,14 @@ class ForecastFragment : BaseFragment<ForecastViewModel, FragmentForecastBinding
                 requireContext().checkSelfPermission(perm) == PackageManager.PERMISSION_GRANTED
 
             override fun permRequestNeeded(perm: String) {
-                requestPermissions(arrayOf(perm), LOCATION_REQUEST)
+                requestPermissions(arrayOf(perm),
+                    LOCATION_REQUEST
+                )
             }
         }
 
         updateForecastFromLocation()
+        locationService.requestUpdates(1_000L, viewModel.locationChangedListener)
     }
 
     private fun setupViews() {
@@ -45,7 +50,13 @@ class ForecastFragment : BaseFragment<ForecastViewModel, FragmentForecastBinding
     // Subscribe LiveData to UI Changes
     private fun subscribeUi() {
         viewModel.getHourlyForecast().observe(this, Observer { forecast ->
-            binding.rvForecast.adapter = ForecastAdapter(forecast)
+            if (forecastAdapter == null) {
+                forecastAdapter = ForecastAdapter(forecast)
+                binding.rvForecast.adapter = forecastAdapter
+            } else {
+                forecastAdapter?.forecast = forecast
+                forecastAdapter?.notifyDataSetChanged()
+            }
         })
     }
 

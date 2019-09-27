@@ -1,4 +1,4 @@
-package com.kennygunderman.ombrello.service
+package com.kennygunderman.ombrello.service.location
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -44,6 +44,18 @@ class LocationService(private val locationManager: LocationManager, private val 
         } else {
             requestPermission()
             null
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    fun requestUpdates(interval: Long, listener: LocationChangedListener) {
+        if (hasPerms()) {
+            locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                interval,
+                50f,
+                listener
+            )
         }
     }
 

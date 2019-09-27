@@ -7,6 +7,7 @@ import com.kennygunderman.ombrello.data.model.ForecastCondition
 import com.kennygunderman.ombrello.data.model.TempUnit
 import com.kennygunderman.ombrello.data.model.WeatherResponse
 import com.kennygunderman.ombrello.service.api.WeatherService
+import com.kennygunderman.ombrello.service.location.LocationChangedListener
 import com.kennygunderman.ombrello.ui.base.BaseViewModel
 import com.kennygunderman.ombrello.util.IDateUtil
 import retrofit2.Call
@@ -18,6 +19,10 @@ constructor(private val weatherService: WeatherService, private val dateUtil: ID
     private val temp = MutableLiveData<String>()
     private val status = MutableLiveData<String>()
     private val hourlyForecast = MutableLiveData<List<ForecastCondition>>()
+
+    val locationChangedListener = LocationChangedListener { lat, long ->
+        updateForecast(lat, long)
+    }
 
     fun getTemp(): LiveData<String> = temp
     fun getStatus(): LiveData<String> = status

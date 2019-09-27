@@ -4,7 +4,7 @@ import com.kennygunderman.ombrello.R
 import com.kennygunderman.ombrello.data.model.ForecastCondition
 import com.kennygunderman.ombrello.ui.base.BaseRecyclerViewAdapter
 
-class ForecastAdapter(val forecast: List<ForecastCondition>) : BaseRecyclerViewAdapter() {
+class ForecastAdapter(var forecast: List<ForecastCondition>) : BaseRecyclerViewAdapter() {
 
     override fun getObjForPosition(position: Int): Any {
         val fc = forecast[position]

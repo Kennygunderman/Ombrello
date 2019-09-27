@@ -3,7 +3,7 @@ package com.kennygunderman.ombrello.di
 import android.content.Context
 import android.location.Geocoder
 import android.location.LocationManager
-import com.kennygunderman.ombrello.service.LocationService
+import com.kennygunderman.ombrello.service.location.LocationService
 import org.koin.dsl.module
 import java.util.*
 
