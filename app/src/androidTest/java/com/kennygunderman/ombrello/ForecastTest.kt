@@ -99,8 +99,8 @@ class ForecastTest: KoinTest {
         val errorMessage = "UI Test Error Msg!"
         testErrorLiveData.postValue(errorMessage)
 
+        onView(withText(errorMessage)).check(matches(isDisplayed()))
         onView(withText("Error")).check(matches(isDisplayed()))
-        onView(withText("UI Test Error Msg!")).check(matches(isDisplayed()))
 
         Thread.sleep(10000) //Added in for demo purposes
     }
