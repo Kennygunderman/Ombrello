@@ -44,9 +44,10 @@ class ForecastViewModelTest: KoinTest {
     /**
      * Create mock dependencies for viewModel
      *
-     * The viewModel contains 2 dependencies
+     * The viewModel contains 3 dependencies
      *  - WeatherService
      *  - DateUtil
+     *  - LocationService
      */
     private val mockModule = module {
         factory<LocationService> {
