@@ -87,5 +87,5 @@ ext {
 
     deps.junit = "junit:junit:$versions.junit"
     deps.byte_units = "com.jakewharton.byteunits:byteunits:$versions.byte_units"
-    deps.picasso = "com.squareup.picasso:picasso:$versions.picasso"
+
 }

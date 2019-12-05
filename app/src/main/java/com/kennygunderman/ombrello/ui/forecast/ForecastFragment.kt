@@ -1,5 +1,6 @@
 package com.kennygunderman.ombrello.ui.forecast
 
+import android.app.AlertDialog
 import android.content.pm.PackageManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -16,14 +17,12 @@ class ForecastFragment : BaseFragment<ForecastViewModel, FragmentForecastBinding
     override val resId: Int
         get() = R.layout.fragment_forecast
 
-    private val locationService by inject<LocationService>()
-
     override fun onStart() {
         super.onStart()
         setupViews()
         subscribeUi()
 
-        locationService.callback = object : LocationService.Callback {
+        viewModel.locationService.callback = object : LocationService.Callback {
             override fun hasPermission(perm: String): Boolean =
                 requireContext().checkSelfPermission(perm) == PackageManager.PERMISSION_GRANTED
 
@@ -32,7 +31,7 @@ class ForecastFragment : BaseFragment<ForecastViewModel, FragmentForecastBinding
             }
         }
 
-        updateForecastFromLocation()
+        viewModel.updateForecastFromLocation()
     }
 
     private fun setupViews() {
@@ -47,11 +46,19 @@ class ForecastFragment : BaseFragment<ForecastViewModel, FragmentForecastBinding
         viewModel.getHourlyForecast().observe(this, Observer { forecast ->
             binding.rvForecast.adapter = ForecastAdapter(forecast)
         })
+
+        viewModel.getWeatherError().observe(this, Observer { error ->
+            showErrorDialog(error)
+        })
     }
 
-    private fun updateForecastFromLocation() {
-        locationService.findLatLongFromLocation()?.let { loc ->
-            viewModel.updateForecast(loc.first, loc.second)
+    private fun showErrorDialog(errorMsg: String) {
+        context?.let { ctx ->
+            AlertDialog.Builder(ctx)
+                .setTitle("Error")
+                .setMessage(errorMsg)
+                .setPositiveButton("OK", null)
+                .show()
         }
     }
 
@@ -62,7 +69,7 @@ class ForecastFragment : BaseFragment<ForecastViewModel, FragmentForecastBinding
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == LOCATION_REQUEST && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            updateForecastFromLocation()
+            viewModel.updateForecastFromLocation()
         }
     }
 }

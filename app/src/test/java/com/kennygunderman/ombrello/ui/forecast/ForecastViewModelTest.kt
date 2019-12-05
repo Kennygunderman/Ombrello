@@ -5,10 +5,17 @@ import com.kennygunderman.ombrello.data.model.ForecastCondition
 import com.kennygunderman.ombrello.data.model.HourlyResponse
 import com.kennygunderman.ombrello.data.model.WeatherResponse
 import com.kennygunderman.ombrello.mocks.MockWeatherServiceMockSuccess
+import com.kennygunderman.ombrello.service.LocationService
 import com.kennygunderman.ombrello.service.api.WeatherService
+import com.kennygunderman.ombrello.util.DateUtil
 import com.kennygunderman.ombrello.util.IDateUtil
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.whenever
 import junit.framework.Assert.assertEquals
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.rules.TestRule
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
@@ -16,8 +23,8 @@ import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.inject
+import org.koin.test.mock.declareMock
 import java.util.*
-import com.kennygunderman.ombrello.util.DateUtil
 
 class ForecastViewModelTest: KoinTest {
 
@@ -42,6 +49,11 @@ class ForecastViewModelTest: KoinTest {
      *  - DateUtil
      */
     private val mockModule = module {
+        factory<LocationService> {
+            declareMock {
+                whenever(findLatLongFromLocation()).doReturn(Pair(10.0, 10.0))
+            }
+        }
         factory<WeatherService> { MockWeatherServiceMockSuccess(mockResponse) }
         factory<IDateUtil> {
             object : IDateUtil {
@@ -51,7 +63,7 @@ class ForecastViewModelTest: KoinTest {
             }
         }
 
-        viewModel { ForecastViewModel(get(), get()) }
+        viewModel { ForecastViewModel(get(), get(), get()) }
     }
 
     private val viewModel by inject<ForecastViewModel>()
@@ -77,7 +89,7 @@ class ForecastViewModelTest: KoinTest {
 
     @Test
     fun updateForecast_tempUpdated() {
-        viewModel.updateForecast(10.0, 10.0)
+        viewModel.updateForecastFromLocation()
         assertEquals("${mockCondition.temp.toInt()}°F", viewModel.getTemp().value)
     }
 
@@ -89,7 +101,7 @@ class ForecastViewModelTest: KoinTest {
      */
     @Test
     fun updateForecast_summaryUpdated() {
-        viewModel.updateForecast(10.0, 10.0)
+        viewModel.updateForecastFromLocation()
         assertEquals(mockCondition.summary, viewModel.getStatus().value)
     }
 
@@ -101,7 +113,7 @@ class ForecastViewModelTest: KoinTest {
      */
     @Test
     fun updateForecast_hourlyForecastParsed() {
-        viewModel.updateForecast(10.0, 10.0)
+        viewModel.updateForecastFromLocation()
         assertEquals(2, viewModel.getHourlyForecast().value?.size)
         assertEquals(mockHourlyResponse.hours[0], viewModel.getHourlyForecast().value!![0])
         assertEquals(mockHourlyResponse.hours[1], viewModel.getHourlyForecast().value!![1])
