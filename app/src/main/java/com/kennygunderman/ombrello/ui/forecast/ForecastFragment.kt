@@ -11,7 +11,6 @@ import com.kennygunderman.ombrello.service.LocationService
 import com.kennygunderman.ombrello.ui.base.BaseFragment
 import com.kennygunderman.ombrello.ui.forecast.adapter.ForecastAdapter
 import com.kennygunderman.ombrello.util.LayoutUtil
-import org.koin.android.ext.android.inject
 
 class ForecastFragment : BaseFragment<ForecastViewModel, FragmentForecastBinding>(ForecastViewModel::class) {
     override val resId: Int

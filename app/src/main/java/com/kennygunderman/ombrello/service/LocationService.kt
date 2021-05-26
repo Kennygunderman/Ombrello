@@ -2,8 +2,11 @@ package com.kennygunderman.ombrello.service
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.location.Address
 import android.location.Geocoder
+import android.location.Location
 import android.location.LocationManager
+
 
 val LOCATION_REQUEST = 100
 
@@ -30,10 +33,9 @@ open class LocationService(private val locationManager: LocationManager, private
      *
      * @return Pair
      */
-    @SuppressLint("MissingPermission")
     fun findLatLongFromLocation(): Pair<Double, Double>? {
         return if (hasPerms()) {
-            val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            val location = getLocation()
             location ?: return null
 
             val address = geocoder
@@ -45,6 +47,26 @@ open class LocationService(private val locationManager: LocationManager, private
             requestPermission()
             null
         }
+    }
+
+    fun getCity(): String? {
+       return findLatLongFromLocation()?.let {
+            val addresses: List<Address> = geocoder.getFromLocation(it.first, it.second, 1)
+            addresses[0].getLocality()
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getLocation(): Location? {
+        val providers: List<String> = locationManager.getProviders(true)
+        var bestLocation: Location? = null
+        for (provider in providers) {
+            val location: Location = locationManager.getLastKnownLocation(provider) ?: continue
+            if (bestLocation == null || location.accuracy < bestLocation.accuracy) {
+                bestLocation = location
+            }
+        }
+        return bestLocation
     }
 
     private fun hasPerms(): Boolean = callback?.hasPermission(perm) == true

@@ -1,6 +1,5 @@
 package com.kennygunderman.ombrello.ui.forecast
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kennygunderman.ombrello.OpenForTesting
@@ -23,22 +22,34 @@ constructor(
     private val weatherService: WeatherService
 ): BaseViewModel() {
     private val temp = MutableLiveData<String>()
+    private val city = MutableLiveData<String>()
     private val status = MutableLiveData<String>()
     private val hourlyForecast = MutableLiveData<List<ForecastCondition>>()
     private val weatherError = MutableLiveData<String>()
 
     fun getTemp(): LiveData<String> = temp
+    fun getCity(): LiveData<String> = city
     fun getStatus(): LiveData<String> = status
     fun getHourlyForecast(): LiveData<List<ForecastCondition>> = hourlyForecast
     fun getWeatherError(): LiveData<String> = weatherError
+
+    private var hasFetchedForecast = false
 
     /**
      * Update weather forecast from user's current location
      */
     fun updateForecastFromLocation() {
+        if (hasFetchedForecast) return
+
+        locationService.getCity()?.let { city ->
+            this.city.postValue(city)
+        }
+
         locationService.findLatLongFromLocation()?.let { loc ->
             updateForecast(loc.first, loc.second)
         }
+
+        hasFetchedForecast = true
     }
 
     /**
@@ -49,12 +60,9 @@ constructor(
      *
      */
     private fun updateForecast(lat: Double, long: Double) {
+
         weatherService.getWeather(lat, long, TempUnit.FAHRENHEIT)
             .enqueue(object: Callback<WeatherResponse> {
-                override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
-                    weatherError.postValue(t.localizedMessage)
-                }
-
                 override fun onResponse(
                     call: Call<WeatherResponse>,
                     response: Response<WeatherResponse>
@@ -66,6 +74,10 @@ constructor(
                     response.body()?.currentForecast?.let { currentForecast ->
                         updateStatus(currentForecast)
                     }
+                }
+
+                override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
+                    weatherError.postValue(t.localizedMessage)
                 }
             })
     }

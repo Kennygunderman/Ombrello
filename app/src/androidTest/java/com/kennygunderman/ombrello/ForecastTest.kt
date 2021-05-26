@@ -74,18 +74,18 @@ class ForecastTest: KoinTest {
     @Test
     fun forecastDisplayed() {
         val forecastData = listOf(
-            ForecastCondition("Sunny", null, 77.0, Date()),
-            ForecastCondition("Cloudy", null, 45.0, Date()),
-            ForecastCondition("Cloudy", null, 240.0, Date()),
-            ForecastCondition("Cloudy", null, -89.0, Date())
+            ForecastCondition("Sunny", null, 400.0, Date()),
+            ForecastCondition("Cloudy", null, 500.0, Date()),
+            ForecastCondition("Cloudy", null, 600.0, Date()),
+            ForecastCondition("Cloudy", null, 700.0, Date())
         )
 
         testForecastLiveData.postValue(forecastData)
 
-        onView(withText("77°F")).check(matches(isDisplayed()))
-        onView(withText("45°F")).check(matches(isDisplayed()))
-        onView(withText("240°F")).check(matches(isDisplayed()))
-        onView(withText("-89°F")).check(matches(isDisplayed()))
+        onView(withText("400°F")).check(matches(isDisplayed()))
+        onView(withText("500°F")).check(matches(isDisplayed()))
+        onView(withText("600°F")).check(matches(isDisplayed()))
+        onView(withText("700°F")).check(matches(isDisplayed()))
 
         Thread.sleep(10000) //Added in for demo purposes
     }
