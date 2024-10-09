@@ -1,0 +1,1 @@
+A weather app I built as a take-home project for an Android engineering position. I named it "Ombrello" because it's French for "umbrella"... or so I thought. Turns out it's Italian. Naming things is hard. Anyway, this app helped me land a job offer.
